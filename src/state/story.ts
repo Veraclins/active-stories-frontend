@@ -1,31 +1,59 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { User } from 'state/interfaces';
-import { persistLogin, getAuth, clearAuth } from 'helpers/auth';
+import { Story } from 'state/interfaces';
+import { AppThunk } from 'store';
+import { changeLoadingState, showError } from 'state/status';
+import api from 'services/api';
 
 type CurrentStoryState = {
-  authenticated: boolean;
-  user: User | null;
+  stories: Story[];
+  current: Story | null;
 };
 
-const initialState: CurrentAuthState = getAuth();
+const initialState: CurrentStoryState = {
+  stories: [],
+  current: null,
+};
 
-const authSlice = createSlice({
-  name: 'auth',
+const storySlice = createSlice({
+  name: 'story',
   initialState,
   reducers: {
-    login(state, action: PayloadAction<User>) {
-      state.user = action.payload;
-      state.authenticated = true;
-      persistLogin(state.authenticated, state.user);
+    setStories(state, action: PayloadAction<Story[]>) {
+      // 'getStories' seems to return stories without ids. I need a way of uniquely identifying stories
+      let tempId = 0;
+      let newStory: Story;
+      state.stories = action.payload.map(story => {
+        tempId++;
+        newStory = {
+          ...story,
+          id: story.id ? story.id : tempId,
+        };
+        return newStory;
+      });
     },
-    logout(state) {
-      state.user = null;
-      state.authenticated = false;
-      clearAuth();
+    setCurrentStory(state, action: PayloadAction<number>) {
+      const id = action.payload;
+      const current = state.stories.find(story => story.id === id) || null;
+      state.current = current;
     },
   },
 });
 
-export const { login, logout } = authSlice.actions;
+export const { setStories, setCurrentStory } = storySlice.actions;
 
-export default authSlice.reducer;
+export default storySlice.reducer;
+
+// There is no endpoint for approving/rejecting a story. This is jst a mock
+export const updateStory = (
+  id: number,
+  status: string
+): AppThunk => async dispatch => {
+  try {
+    dispatch(changeLoadingState(true));
+    // await api.put(`/updateStory/${id}`, { status });
+  } catch (err) {
+    dispatch(showError(err.message || err.data));
+  } finally {
+    dispatch(changeLoadingState(false));
+  }
+};

@@ -1,7 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { BrowserRouter } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -17,10 +15,6 @@ const App: React.FunctionComponent = () => {
       <BrowserRouter>
         {routes}
         {loading && <Loader />}
-        <ToastContainer
-          autoClose={5000}
-          position={toast.POSITION.BOTTOM_LEFT}
-        />
       </BrowserRouter>
     </MainContainer>
   );

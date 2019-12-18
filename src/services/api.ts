@@ -1,26 +1,28 @@
 import axios from 'axios';
 import config from 'config';
 
-const instance = axios.create({
+const api = axios.create({
   baseURL: config.BASE_URL,
   method: 'GET',
 });
 
-instance.interceptors.response.use(
+api.interceptors.response.use(
   response => {
-    console.log(response);
     const { data } = response;
-    if (typeof data === 'string' && data.charAt(0) === '{') {
-      response.data = eval(`( ${data} )`);
+    if (typeof data === 'string') {
+      // the beeceptor api returns objects wrapped as a string
+      if (data.charAt(0) === '{' || data.charAt(0) === '[') {
+        response.data = eval(`( ${data} )`);
+      } else {
+        throw new Error(data);
+      }
     }
     return response;
   },
   error => {
     const formatedError = error.response ? error.response : error;
-    // if (formatedError.data.error === 'TokenExpiredError: jwt expired') {
-    // }
     throw formatedError;
   }
 );
 
-export default instance;
+export default api;

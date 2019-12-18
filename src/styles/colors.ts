@@ -2,7 +2,7 @@ import Color from 'color';
 
 export const brand = '#F62F5E';
 export const brandBlue = '#6EB2FB';
-export const brandGreen = '#00D3CA';
+export const brandGreen = '#00B300';
 export const brandYellow = '#EFFC90';
 export const brandOrange = '#F1AD3D';
 export const dark = '#2E2E2E';

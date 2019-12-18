@@ -27,7 +27,6 @@ export const useForm = (initialValues: any, callback: Function) => {
       } else {
         value = event.target.value;
       }
-      console.log({ values, value });
       return {
         ...val,
         [event.target.name]: value,
@@ -45,10 +44,13 @@ export const useForm = (initialValues: any, callback: Function) => {
 type Method = 'get' | 'delete' | 'head' | 'options' | 'post' | 'put' | 'patch';
 
 interface Config extends AxiosRequestConfig {
-  method: Method;
+  method?: Method;
 }
 
-export const useAxios = ({ url, method, data }: Config, initializer: any) => {
+export const useAxios = (
+  { url, method = 'get', data }: Config,
+  initializer: any
+) => {
   const [result, setResult] = useState(initializer);
   const dispatch = useDispatch();
 
@@ -58,7 +60,9 @@ export const useAxios = ({ url, method, data }: Config, initializer: any) => {
         if (!url) return;
 
         dispatch(changeLoadingState(true));
-        const response = await (api as any)[method](url, data);
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        const response = await api[method](url, data);
         const payload = response.data;
         setResult(payload);
         dispatch(changeLoadingState(false));

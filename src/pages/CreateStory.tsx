@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 
@@ -13,6 +13,7 @@ import { changeLoadingState, showError } from 'state/status';
 import { login } from 'state/auth';
 import Textarea from 'components/Textarea';
 import Select from 'components/Select';
+import { RootState } from 'store/rootReducer';
 
 const CreateStory: React.FunctionComponent = () => {
   const dispatch = useDispatch();
@@ -62,23 +63,25 @@ const CreateStory: React.FunctionComponent = () => {
       label: 'High',
     },
   ];
+
+  const { error } = useSelector((state: RootState) => state.status);
+
+  useEffect(() => {
+    setErrors(error);
+  }, [error]);
+
   const submit = async (data: any) => {
     try {
       dispatch(changeLoadingState(true));
-      const response = await api.post('createStory', data);
-      if (typeof response.data === 'string') {
-        throw new Error(response.data);
-      }
-      dispatch(login(response.data));
+      await api.post('createStory', data);
       history.push('/');
-    } catch (error) {
-      const message = error.message || error.data;
-      setErrors(message);
-      dispatch(showError(message));
+    } catch (err) {
+      dispatch(showError(err.message || err.data));
     } finally {
       dispatch(changeLoadingState(false));
     }
   };
+
   const { values, handleChange, handleSubmit } = useForm(
     {
       summary: '',
@@ -193,13 +196,6 @@ const StorySelect = styled(Select)`
   padding: ${rem(15)} ${rem(20)};
   border-radius: ${rem(8)};
   align-items: center;
-`;
-
-const LeftIcon = styled.div`
-  position: absolute;
-  left: ${rem(25)};
-  top: 50%;
-  transform: translateY(-50%);
 `;
 
 export default CreateStory;

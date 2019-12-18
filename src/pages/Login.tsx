@@ -16,7 +16,9 @@ import { login } from 'state/auth';
 import { RootState } from 'store/rootReducer';
 
 const Login: React.FunctionComponent = () => {
-  const { authenticated } = useSelector((state: RootState) => state.auth);
+  const { authenticated, user } = useSelector((state: RootState) => state.auth);
+  const { error } = useSelector((state: RootState) => state.status);
+
   const dispatch = useDispatch();
   const history = useHistory();
   const [errors, setErrors] = useState('');
@@ -26,19 +28,9 @@ const Login: React.FunctionComponent = () => {
     try {
       dispatch(changeLoadingState(true));
       const response = await api.post(url, data);
-      if (typeof response.data === 'string') {
-        throw new Error(response.data);
-      }
       dispatch(login(response.data));
-      const { userRoles } = response.data;
-      if (userRoles.incudes('Admin')) {
-        return history.push('/');
-      }
-      return history.push('/create-story');
-    } catch (error) {
-      const message = error.message || error.data;
-      setErrors(message);
-      dispatch(showError(message));
+    } catch (err) {
+      dispatch(showError(err.message || err.data));
     } finally {
       dispatch(changeLoadingState(false));
     }
@@ -54,9 +46,14 @@ const Login: React.FunctionComponent = () => {
 
   useEffect(() => {
     if (authenticated) {
-      history.push('/');
+      if (user?.userRoles[0] === 'User') {
+        history.push('/create-story');
+      } else {
+        history.push('/');
+      }
     }
-  });
+    setErrors(error);
+  }, [authenticated, error, history, user]);
 
   return (
     <Container>

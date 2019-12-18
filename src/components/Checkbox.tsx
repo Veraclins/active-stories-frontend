@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { rem } from 'styles';
-import { lightGrey, lighten, white, fade, dark } from 'styles/colors';
+import { dark, white } from 'styles/colors';
 
 interface CheckboxProps {
   checked: boolean;

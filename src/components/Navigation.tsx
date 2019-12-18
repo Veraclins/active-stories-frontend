@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { rem } from 'styles';
 import { RootState } from 'store/rootReducer';
 import { logout } from 'state/auth';
+import { white } from 'styles/colors';
 
 interface NavigationProps {
   theme: any;
@@ -20,6 +21,9 @@ interface NavItemProps {
 
 interface ProfileProps {
   theme: any;
+}
+interface NavProps {
+  authenticated: any;
 }
 
 const createInitials = (words: string[]) => {
@@ -43,7 +47,7 @@ const Navigation: React.FunctionComponent<NavigationProps> = ({
   };
 
   return (
-    <Main>
+    <Main authenticated={authenticated}>
       <NavItem
         pathname={pathname}
         theme={theme}
@@ -74,12 +78,13 @@ const NavItem = styled(NavLink)<NavItemProps>`
   }
 `;
 
-const Main = styled.div`
+const Main = styled.div<NavProps>`
   display: flex;
   width: 100%;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: ${({ authenticated }) =>
+    authenticated ? 'space-between' : 'flex-end'};
   @media screen and (min-width: ${rem(480)}) {
     max-width: ${rem(800)};
     flex-direction: row;
@@ -96,6 +101,7 @@ const Dropdown = styled.div`
   justify-content: center;
   top: 100%;
   height: ${rem(50)};
+  border: ${rem(1)} solid ${white};
   cursor: pointer;
 `;
 

@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { toast } from 'react-toastify';
 
 type CurrentStatusState = {
   loading: boolean;
@@ -23,8 +22,7 @@ const statusSlice = createSlice({
       state.loading = action.payload;
     },
     showError(state, action: PayloadAction<ErrorPayload>) {
-      const { payload } = action;
-      state.error = payload;
+      state.error = action.payload;
     },
   },
 });

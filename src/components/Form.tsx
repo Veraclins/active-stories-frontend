@@ -43,7 +43,6 @@ const Container = styled.div`
 `;
 
 const StyledForm = styled.form<Partial<FormProps>>`
-  padding: ${rem(7.5)} ${rem(20)};
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -54,10 +53,15 @@ const StyledForm = styled.form<Partial<FormProps>>`
   font-weight: bold;
   border-radius: ${rem(10)};
   width: 100%;
+  padding: ${rem(8)};
 
   &::placeholder {
     color: ${({ color }) => color};
     opacity: 0.6;
+  }
+
+  @media screen and (min-width: ${rem(480)}) {
+    padding: ${rem(8)} ${rem(20)};
   }
 `;
 
