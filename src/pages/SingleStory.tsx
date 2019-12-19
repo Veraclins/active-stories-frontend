@@ -110,7 +110,6 @@ const Field = styled.div`
   margin: ${rem(10)} 0;
   display: flex;
   box-sizing: border-box;
-  /* align-items: center; */
 `;
 
 const Text = styled.div`
