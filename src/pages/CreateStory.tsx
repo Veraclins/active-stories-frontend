@@ -170,7 +170,6 @@ const Container = styled.div`
   justify-content: center;
   color: ${dark};
   max-width: ${rem(500)};
-  /* height: ${rem(500)}; */
   border-radius: ${rem(20)};
   box-shadow: 0 ${rem(2)} ${rem(6)} ${rem(-2)} ${dark};
   width: 100%;
